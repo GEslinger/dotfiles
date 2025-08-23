@@ -244,8 +244,14 @@ vim.opt.rtp:prepend(lazypath)
 --
 -- NOTE: Here is where you install your plugins.
 require('lazy').setup({
+
   -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
+
+  {
+    'zigtools/zls', -- Zig language server (master)
+    build = 'zig build -Doptimize=ReleaseSafe',
+  },
 
   -- NOTE: Plugins can also be added by using a table,
   -- with the first argument being the link and the following
@@ -710,7 +716,6 @@ require('lazy').setup({
         -- But for many setups, the LSP (`ts_ls`) will work just fine
         -- ts_ls = {},
         --
-        zls = {},
 
         lua_ls = {
           -- cmd = { ... },
@@ -759,6 +764,19 @@ require('lazy').setup({
             server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
             require('lspconfig')[server_name].setup(server)
           end,
+        },
+      }
+
+      local zls_ext = ''
+      if vim.fn.has 'win32' then
+        zls_ext = '.exe'
+      end
+
+      require('lspconfig').zls.setup {
+        cmd = { vim.fn.stdpath 'data' .. '/lazy/zls/zig-out/bin/zls' .. zls_ext },
+
+        settings = {
+          zls = {},
         },
       }
     end,
@@ -1019,24 +1037,30 @@ require('lazy').setup({
   -- In normal mode type `<space>sh` then write `lazy.nvim-plugin`
   -- you can continue same window with `<space>sr` which resumes last telescope search
 }, {
+
+  git = {
+    timeout = 600, -- Allow for up to 10 minute builds because of ZLS
+  },
+
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the
     -- default lazy.nvim defined Nerd Font icons, otherwise define a unicode icons table
-    icons = vim.g.have_nerd_font and {} or {
-      cmd = '⌘',
-      config = '🛠',
-      event = '📅',
-      ft = '📂',
-      init = '⚙',
-      keys = '🗝',
-      plugin = '🔌',
-      runtime = '💻',
-      require = '🌙',
-      source = '📄',
-      start = '🚀',
-      task = '📌',
-      lazy = '💤 ',
-    },
+    icons = {},
+    -- icons = vim.g.have_nerd_font and {} or {
+    --   cmd = '⌘',
+    --   config = '🛠',
+    --   event = '📅',
+    --   ft = '📂',
+    --   init = '⚙',
+    --   keys = '🗝',
+    --   plugin = '🔌',
+    --   runtime = '💻',
+    --   require = '🌙',
+    --   source = '📄',
+    --   start = '🚀',
+    --   task = '📌',
+    --   lazy = '💤 ',
+    -- },
   },
 })
 
