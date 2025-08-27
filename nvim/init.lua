@@ -768,16 +768,18 @@ require('lazy').setup({
       }
 
       local zls_ext = ''
-      if vim.fn.has 'win32' then
+      if vim.fn.has 'win32' == 1 then
         zls_ext = '.exe'
       end
 
       require('lspconfig').zls.setup {
         cmd = { vim.fn.stdpath 'data' .. '/lazy/zls/zig-out/bin/zls' .. zls_ext },
 
-        settings = {
-          zls = {},
-        },
+        -- settings = {
+        --   zls = {
+        --     zig_exe_path = '/snap/zig/14937/zig',
+        --   },
+        -- },
       }
     end,
   },
